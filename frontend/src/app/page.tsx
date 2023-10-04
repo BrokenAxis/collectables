@@ -1,4 +1,4 @@
-import { DefaultNavBar } from '@/components/default-nav-bar'
+import { DefaultNavBar } from '@/components/welcome-nav-bar'
 import { WelcomePage } from '@/components/welcome-page'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'

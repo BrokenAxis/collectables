@@ -9,33 +9,15 @@ interface ButtonProps {
 
 export function BackButton({ ...props }: ButtonProps) {
   return (
-    <Button
-      variant="ghost"
-      className={cn('absolute left-4 top-4 md:left-8 md:top-8', props)}
-    >
-      <Link href="/">
+    <Link href="/">
+      {' '}
+      <Button
+        variant="ghost"
+        className={cn('absolute left-4 top-4 md:left-8 md:top-8', props)}
+      >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back
-      </Link>
-    </Button>
+      </Button>
+    </Link>
   )
 }
-
-// export function BackButton() {
-//   return (
-//     <Button>
-//       <Link
-//         href="/"
-//         className={cn(
-//           buttonVariants({ variant: 'outline' }),
-//           'absolute left-4 top-4 md:left-8 md:top-8'
-//         )}
-//       >
-//         <>
-//           <ArrowLeft className="mr-2 h-4 w-4" />
-//           Back
-//         </>
-//       </Link>
-//     </Button>
-//   )
-// }

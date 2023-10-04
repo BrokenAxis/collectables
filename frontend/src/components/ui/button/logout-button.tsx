@@ -2,17 +2,13 @@
 
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2Icon } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 
 export function LogoutButton() {
-  const [isLoading, setIsLoading] = React.useState(false)
   const router = useRouter()
 
   async function onSubmit() {
-    setIsLoading(true)
-
     const logOutResult = await fetch('/api/auth/logout', {
       method: 'POST',
       headers: {
@@ -20,8 +16,6 @@ export function LogoutButton() {
       },
       credentials: 'include',
     })
-
-    setIsLoading(false)
 
     if (!logOutResult?.ok) {
       return toast({
@@ -40,8 +34,13 @@ export function LogoutButton() {
   }
 
   return (
-    <Button onClick={() => onSubmit()}>
-      {isLoading && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}Logout
+    <Button
+      onClick={() => onSubmit()}
+      variant="outline"
+      size="sm"
+      className="transition-transform duration-300 transform active:translate-y-3"
+    >
+      Logout
     </Button>
   )
 }

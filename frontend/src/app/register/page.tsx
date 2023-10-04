@@ -18,6 +18,7 @@ export default function SignupPage() {
           alt="Logic"
           width={500}
           height={500}
+          priority={true}
         />
         <BackButton />
       </div>
