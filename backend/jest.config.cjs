@@ -3,7 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   moduleNameMapper: {
       '^@Source/(.*)$': '<rootDir>/src/$1',
-      '^@Test/(.*)$': '<rootDir>/tests/$1',
-      '^@Prisma/(.*)$': '<rootDir>/prisma/$1',
+      '^@Test/(.*)$': '<rootDir>/tests/$1'
   },
 };
