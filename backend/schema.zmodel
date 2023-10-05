@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+
+enum Role {
+  USER
+  MANAGER
+  ADMIN
+}
+
+model User {
+  id      String   @id
+  name    String   @unique
+  role    Role     @default(USER)
+  profile Profile?
+
+  // reviews the user has written for other users
+  reviews Review[] @relation("reviewer")
+
+  @@allow('create,read', true)
+  @@allow('update,delete', auth() == this)
+  @@allow('all', auth().role == "ADMIN")
+}
+
+model Profile {
+  id           String        @id
+  user         User          @relation(fields: [id], references: [id])
+  collection   Collectable[] @relation("collection")
+  wishlist     Collectable[] @relation("wishlist")
+  wares        Collectable[] @relation("wares")
+  description  String
+  image        String
+  achievements Achievement[]
+  sales        Trade[]       @relation("seller")
+  purchases    Trade[]       @relation("buyer")
+  reputation   Int
+
+  // reviews the user has received from other users
+  reviews Review[] @relation("reviewee")
+
+  @@allow('create,read', true)
+  @@allow('update,delete', auth() == user)
+  @@allow('all', auth().role == "ADMIN")
+}
+
+model Collectable {
+  id         String    @id
+  name       String
+  collection Profile[] @relation("collection")
+  wishlist   Profile[] @relation("wishlist")
+  wares      Profile[] @relation("wares")
+  Trade      Trade[]
+
+  @@allow('read', true)
+  @@allow('all', auth().role == "ADMIN")
+}
+
+model Review {
+  id         String  @id
+  rating     Int
+  comment    String
+  reviewee   Profile @relation("reviewee", fields: [reviewerId], references: [id])
+  reviewerId String
+  reviewer   User    @relation("reviewer", fields: [revieweeId], references: [id])
+  revieweeId String
+
+  @@allow('read', true)
+  @@allow('all', auth().role == "ADMIN" || auth() == reviewer)
+}
+
+model Achievement {
+  id          String    @id
+  name        String
+  description String
+  image       String
+  users       Profile[]
+
+  @@allow('read', true)
+  @@allow('all', auth().role == "ADMIN")
+}
+
+model Trade {
+  id            String      @id
+  seller        Profile     @relation("seller", fields: [sellerId], references: [id])
+  sellerId      String
+  buyer         Profile     @relation("buyer", fields: [buyerId], references: [id])
+  buyerId       String
+  collectable   Collectable @relation(fields: [collectableId], references: [id])
+  collectableId String
+  status        Status      @default(PENDING) @allow('update', auth().id == sellerId)
+  price         Int
+
+  @@allow('read', true)
+  @@allow('create' , auth().id == sellerId)
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Chat {
+  senderId   String
+  receiverId String
+  content    String
+  Message    Message[]
+
+  // note: not sure if order matters
+  @@id(fields: [senderId, receiverId])
+
+  @@allow('create,read,update', senderId == auth().id || receiverId == auth().id)
+  @@allow('all', auth().role == "ADMIN")
+}
+
+model Message {
+  id         String   @id
+  chat       Chat     @relation(fields: [senderId, receiverId], references: [senderId, receiverId])
+  senderId   String
+  receiverId String
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@allow('all', senderId == auth().id)
+  @@allow('read', receiverId == auth().id)
+  @@allow('all', auth().role == "ADMIN")
+}
