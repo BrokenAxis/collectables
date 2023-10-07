@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 export function SettingsButton() {
   return (
-    <Link href="dashboard/settings">
+    <Link href="settings">
       {' '}
       <Button variant="outline" size="icon">
         <Settings className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />

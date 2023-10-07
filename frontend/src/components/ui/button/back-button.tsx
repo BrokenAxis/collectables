@@ -12,8 +12,8 @@ export function BackButton({ ...props }: ButtonProps) {
     <Link href="/">
       {' '}
       <Button
-        variant="ghost"
-        className={cn('absolute left-4 top-4 md:left-8 md:top-8', props)}
+        variant="outline"
+        className={cn('absolute left-4 top-4 md:left-8 md:top-4', props)}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back
