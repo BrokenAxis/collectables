@@ -30,5 +30,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
+  if (!session && req.nextUrl.pathname === '/settings') {
+    return NextResponse.redirect(new URL('/', req.url))
+  }
+
   return res
 }
