@@ -4,7 +4,7 @@ import { DashboardNavBar } from '@/components/dashboard-navbar'
 import { TypographyH2 } from '@/components/typography-h2'
 import { Carousel } from '@/components/ui/carousel'
 import Image from 'next/image'
-
+import { DisplayName } from '@/components/client-display-name'
 export default function Dashboard() {
   const images = [
     'https://limitlesstcg.nyc3.digitaloceanspaces.com/tpci/MEW/MEW_038_R_EN_LG.png',
@@ -26,7 +26,9 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen">
       <DashboardNavBar />
-
+      <div className="container flex pt-6">
+        <DisplayName />
+      </div>
       <section className="space-y-8 pr-5 pl-5 pt-6 md:pt-10 2xl:pr-0 2xl:pl-0">
         <div className="container flex flex-col gap-4 border bg-card text-card-foreground shadow-sm rounded-2xl pt-6 pb-6">
           <TypographyH2 text="Active Campaigns" />

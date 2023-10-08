@@ -89,9 +89,9 @@ export async function PUT(request: Request) {
       email: String(formData.email),
     })
     error = supabase_response.error
-  } else if (requestUrl.pathname === '/api/profile/update/password') {
+  } else if (updateType === 'password') {
     const supabase_response = await supabase.auth.updateUser({
-      password: 'new password',
+      password: String(formData.password),
     })
     error = supabase_response.error
   }
