@@ -53,3 +53,10 @@ export const InvalidFieldError = (field: string, message: string) => {
     400
   )
 }
+
+// Error Wrapper ---------------------------------------------------------------
+
+// Error wrapper for errors thrown by Prisma or other libraries
+export const ErrorWrapper = (name: string, message: string | undefined) => {
+  return createError(name, message || 'Error: Undefined stacktrace', 500)
+}
