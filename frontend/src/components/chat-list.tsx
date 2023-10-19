@@ -33,7 +33,6 @@ export default function ChatList() {
       })
 
       const data = await response.json()
-      console.log(data)
       setChats(data.chats)
     }
     fetchChats()

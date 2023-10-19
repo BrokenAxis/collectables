@@ -5,7 +5,7 @@ export default async function (fastify: FastifyInstance) {
    * POST /manager
    * Creates a campaign manager user
    */
-  fastify.post('/campaign', async () => {
+  fastify.post('/manager', async () => {
     return
   })
 

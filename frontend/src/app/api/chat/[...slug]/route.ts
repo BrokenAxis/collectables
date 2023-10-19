@@ -33,7 +33,7 @@ export async function GET(
         },
       }
     )
-
+    
     const data = await response.json()
 
     if (!response.ok) {

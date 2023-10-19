@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest } from 'fastify'
 import 'dotenv/config'
 import { requestHandler, extractId } from '@Source/utils/supabaseUtils'
 import { getUserId } from '@Source/utils/utils'
-import { InvalidFieldError, MissingFieldError } from '@Source/utils/error'
+import { throwInvalidFieldError, throwMissingFieldError } from '@Source/utils/error'
 
 export default async function (fastify: FastifyInstance) {
   /*
@@ -10,28 +10,22 @@ export default async function (fastify: FastifyInstance) {
    *  Creates a chat between current user and user with receiverName
    *  @returns {object} chat
    */
-  fastify.post(
-    '/chat/:receiverName',
-    async (req: FastifyRequest<{ Params: { receiverName: string } }>) => {
-      const token = req.headers['authorization'] as string
-      const { receiverName } = req.params
-      return await createChat(token, extractId(token), receiverName)
-    }
-  )
+  fastify.post('/chat/:receiverName', async (req: FastifyRequest<{ Params: { receiverName: string } }>) => {
+    const token = req.headers['authorization'] as string
+    const { receiverName } = req.params
+    return await createChat(token, extractId(token), receiverName)
+  })
 
   /*
    *  GET /chat/:receiverName
    *  Returns a chat between current user and user with receiverName
    *  @returns {object} chat
    */
-  fastify.get(
-    '/chat/:receiverName',
-    async (req: FastifyRequest<{ Params: { receiverName: string } }>) => {
-      const token = req.headers['authorization'] as string
-      const { receiverName } = req.params
-      return await getMessages(token, extractId(token), receiverName)
-    }
-  )
+  fastify.get('/chat/:receiverName', async (req: FastifyRequest<{ Params: { receiverName: string } }>) => {
+    const token = req.headers['authorization'] as string
+    const { receiverName } = req.params
+    return await getMessages(token, extractId(token), receiverName)
+  })
 
   /*
    *  GET /chat
@@ -61,7 +55,7 @@ export default async function (fastify: FastifyInstance) {
       const { messageContents } = req.body
 
       if (!messageContents) {
-        throw MissingFieldError('messageContents')
+        throwMissingFieldError('messageContents')
       }
 
       return sendMessage(token, extractId(token), receiverName, messageContents)
@@ -99,8 +93,7 @@ async function getChats(token: string, userId: string) {
 
   const formattedChats = [] // refactor this later im pretty sure there's an easier way of doing this
   for (const chat of chats) {
-    const receiver =
-      chat.users.at(0)?.id === userId ? chat.users.at(1) : chat.users.at(0)
+    const receiver = chat.users.at(0)?.id === userId ? chat.users.at(1) : chat.users.at(0)
     formattedChats.push({
       id: chat.id,
       latestMessage: latestMessages[chats.indexOf(chat)],
@@ -112,11 +105,7 @@ async function getChats(token: string, userId: string) {
   return { chats: formattedChats }
 }
 
-async function getMessages(
-  token: string,
-  userId: string,
-  receiverName: string
-) {
+async function getMessages(token: string, userId: string, receiverName: string) {
   const prisma = await requestHandler(token)
 
   const receiverId = await getUserId(receiverName, prisma)
@@ -133,8 +122,7 @@ async function getMessages(
   })
 
   const formattedMessages: Message[] = chat.messages.map((message) => {
-    const type =
-      message.senderId === userId ? MessageType.USER : MessageType.RECEIVER
+    const type = message.senderId === userId ? MessageType.USER : MessageType.RECEIVER
 
     return {
       type: type,
@@ -152,12 +140,10 @@ async function createChat(token: string, userId: string, receiverName: string) {
   const receiverId = await getUserId(receiverName, prisma)
 
   if (userId === receiverId) {
-    throw InvalidFieldError('receiver', 'cannot message oneself')
+    throwInvalidFieldError('receiver', 'cannot message oneself')
   }
 
-  const sortedIds = [{ id: userId }, { id: receiverId }].sort((a, b) =>
-    a.id.localeCompare(b.id)
-  )
+  const sortedIds = [{ id: userId }, { id: receiverId }].sort((a, b) => a.id.localeCompare(b.id))
 
   const oldChat = await prisma.chat.findFirst({
     where: {
@@ -182,12 +168,7 @@ async function createChat(token: string, userId: string, receiverName: string) {
       })
 }
 
-async function sendMessage(
-  token: string,
-  userId: string,
-  receiverName: string,
-  message: string
-) {
+async function sendMessage(token: string, userId: string, receiverName: string, message: string) {
   const prisma = await requestHandler(token as string)
   const receiverId = await getUserId(receiverName, prisma)
   const id = await getChatId(token, receiverId)

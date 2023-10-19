@@ -23,7 +23,9 @@ export async function GET(request: Request) {
         authorization: token!,
       },
     })
+    console.log(response)
     const data = await response.json()
+    console.log(data)
 
     if (!response.ok || response.status === 404) {
       throw new Error('Cannot find chat list')

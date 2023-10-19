@@ -45,14 +45,10 @@ export const build = async (opt: FastifyServerOptions) => {
 
   // see utils/error.ts for custom error handling
   fastify.setErrorHandler(async (error, request, reply) => {
-    if (error.statusCode) {
-      reply.status(error.statusCode).send({ error: error })
-      console.log(error.name + ': ' + error.message)
-    } else {
-      const err = ErrorWrapper(error.name, error.stack?.split('\n')[0])
-      reply.status(500).send({ error: err })
-      console.log(err)
-    }
+    console.log(error)
+    error.statusCode
+      ? reply.status(error.statusCode).send({ name: error.name, message: error.message, statusCode: error.code })
+      : reply.status(500).send({ name: error.name, message: error.message, statusCode: error.code })
   })
 
   return fastify

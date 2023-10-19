@@ -33,6 +33,10 @@ export async function POST(request: Request) {
     )
 
     console.log(response)
+    console.log(response.ok)
+    const data = await response.json()
+    console.log(data)
+    console.log(response.ok)
 
     if (!response.ok || response.status === 500) {
       throw new Error('Cannot create chat')
