@@ -50,3 +50,19 @@ export const collectionConnectSelect = {
 } satisfies Prisma.CollectionSelect
 
 export type collectionConnect = Prisma.CollectionGetPayload<{ select: typeof collectionConnectSelect }>
+
+export const tradeSelect = {
+  id: true,
+  seller: { select: { name: true, image: true } },
+  buyer: { select: { name: true, image: true } },
+  collectable: {
+    select: {
+      name: true,
+      image: true,
+    },
+  },
+  price: true,
+  status: true,
+} satisfies Prisma.TradeSelect
+
+export type trade = Prisma.TradeGetPayload<{ select: typeof tradeSelect }>

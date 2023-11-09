@@ -85,7 +85,7 @@ model Achievement {
 /// @@allow('read', true)
 /// @@allow('create', auth().id == sellerId)
 model Trade {
-    id String @id()
+    id Int @id() @default(autoincrement())
     seller Profile @relation("seller", fields: [sellerId], references: [id])
     sellerId String
     buyer Profile @relation("buyer", fields: [buyerId], references: [id])
